@@ -1,0 +1,595 @@
+css
+/* =================================
+   GLOBAL SETTINGS
+================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #ff5a36;
+    --secondary-color: #111111;
+    --dark-color: #181818;
+    --light-color: #f5f5f5;
+    --white-color: #ffffff;
+    --text-color: #333333;
+    --muted-color: #777777;
+    --border-color: #dddddd;
+
+    --max-width: 1100px;
+
+    --spacing-small: 10px;
+    --spacing-medium: 20px;
+    --spacing-large: 60px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text-color);
+    background-color: var(--white-color);
+    line-height: 1.6;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.container {
+    width: min(90%, var(--max-width));
+    margin: 0 auto;
+}
+
+.section {
+    padding: var(--spacing-large) 0;
+}
+
+
+/* =================================
+   HEADER
+   FLEXBOX
+================================= */
+
+.site-header {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    min-height: 70px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.logo {
+    font-size: 1.7rem;
+    font-weight: bold;
+}
+
+.logo span {
+    color: var(--primary-color);
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    gap: 25px;
+}
+
+.nav-links a {
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+
+
+/* =================================
+   HERO
+================================= */
+
+.hero {
+    min-height: 600px;
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.65),
+            rgba(0, 0, 0, 0.65)
+        ),
+        linear-gradient(135deg, #222222, #555555);
+
+    color: var(--white-color);
+
+    display: flex;
+    align-items: center;
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+}
+
+.hero-text {
+    max-width: 700px;
+}
+
+.eyebrow {
+    color: var(--primary-color);
+    font-size: 0.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1.05;
+    margin: 0 0 25px;
+}
+
+.hero-text > p:not(.eyebrow) {
+    font-size: 1.15rem;
+    max-width: 600px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+
+/* =================================
+   BUTTONS
+================================= */
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 5px;
+    font-weight: bold;
+    border: 2px solid transparent;
+    transition: 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--white-color);
+    color: var(--secondary-color);
+}
+
+.btn-secondary {
+    border-color: var(--white-color);
+    color: var(--white-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--white-color);
+    color: var(--secondary-color);
+}
+
+.btn-outline {
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+}
+
+.btn-outline:hover {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+}
+
+
+/* =================================
+   SECTION HEADINGS
+================================= */
+
+.section-heading {
+    max-width: 650px;
+    margin-bottom: 40px;
+}
+
+.section-heading h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.1;
+    margin: 0 0 15px;
+}
+
+.centered {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* =================================
+   ABOUT
+   FLEXBOX
+================================= */
+
+.about-content {
+    display: flex;
+    gap: 60px;
+    align-items: flex-start;
+}
+
+.about-content > div,
+.benefits-list {
+    flex: 1;
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.benefits-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+
+/* =================================
+   CLASS SCHEDULE
+   CSS GRID
+================================= */
+
+.section-dark {
+    background-color: var(--dark-color);
+    color: var(--white-color);
+}
+
+.schedule-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 20px;
+}
+
+.schedule-card {
+    background-color: #242424;
+    padding: 25px;
+    border-left: 4px solid var(--primary-color);
+    border-radius: 5px;
+}
+
+.schedule-card .day {
+    color: var(--primary-color);
+    font-size: 0.8rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.schedule-card h3 {
+    margin: 8px 0;
+}
+
+.schedule-card p {
+    margin: 5px 0;
+}
+
+.schedule-card span {
+    color: #bbbbbb;
+    font-size: 0.9rem;
+}
+
+
+/* =================================
+   TRAINERS
+   FLEXBOX
+================================= */
+
+.trainer-container {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.trainer-card {
+    flex: 1 1 300px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--white-color);
+}
+
+.trainer-image {
+    min-height: 220px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: var(--dark-color);
+    color: var(--white-color);
+}
+
+.trainer-image span {
+    width: 110px;
+    height: 110px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--primary-color);
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.trainer-info {
+    padding: 25px;
+}
+
+.trainer-info h3 {
+    margin-top: 0;
+}
+
+.trainer-role {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+
+/* =================================
+   MEMBERSHIP
+   CSS GRID
+================================= */
+
+.membership-section {
+    background-color: var(--light-color);
+}
+
+.pricing-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 25px;
+
+    align-items: stretch;
+}
+
+.pricing-card {
+    background-color: var(--white-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 35px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.pricing-card h3 {
+    font-size: 1.5rem;
+    margin-top: 0;
+}
+
+.price {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.price span {
+    font-size: 0.9rem;
+    color: var(--muted-color);
+    font-weight: normal;
+}
+
+.pricing-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 25px 0;
+
+    flex-grow: 1;
+}
+
+.pricing-card li {
+    padding: 8px 0;
+}
+
+.pricing-card .btn {
+    text-align: center;
+}
+
+.featured {
+    border: 3px solid var(--primary-color);
+    position: relative;
+}
+
+.popular {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    margin: 0;
+    padding: 7px 12px;
+
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+
+/* =================================
+   CONTACT
+================================= */
+
+.contact-section {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+}
+
+.contact-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 50px;
+}
+
+.contact-container .eyebrow {
+    color: var(--secondary-color);
+}
+
+.contact-details {
+    min-width: 300px;
+}
+
+
+/* =================================
+   FOOTER
+================================= */
+
+.site-footer {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+    padding: 25px 0;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.footer-container a {
+    color: var(--primary-color);
+}
+
+
+/* =================================
+   TABLET
+================================= */
+
+@media (max-width: 900px) {
+
+    .nav-container {
+        flex-direction: column;
+        padding: 15px 0;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .schedule-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .about-content {
+        gap: 30px;
+    }
+
+}
+
+
+/* =================================
+   MOBILE
+================================= */
+
+@media (max-width: 600px) {
+
+    .section {
+        padding: 45px 0;
+    }
+
+    .nav-links {
+        gap: 12px;
+    }
+
+    .nav-links a {
+        font-size: 0.8rem;
+    }
+
+    .hero {
+        min-height: 550px;
+    }
+
+    .hero h1 {
+        font-size: 2.8rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero-buttons .btn {
+        text-align: center;
+    }
+
+    .about-content {
+        flex-direction: column;
+    }
+
+    .schedule-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .trainer-container {
+        flex-direction: column;
+    }
+
+    .trainer-card {
+        flex-basis: auto;
+    }
+
+    .contact-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .contact-details {
+        min-width: 0;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+}
+
