@@ -1,29 +1,16 @@
-# Pulse Fitness
+# React + Vite
 
-## About the Project
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Pulse Fitness is a fitness studio website created as part of my web development project.
+Currently, two official plugins are available:
 
-The website provides information about the fitness studio, its services, and how users can get in contact.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## Technologies Used
+## React Compiler
 
-- HTML5
-- CSS3
-- GitHub
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Features
+## Expanding the ESLint configuration
 
-- Home page
-- About Us section
-- Fitness services
-- Contact information
-- Responsive design
-
-## Project Goals
-
-The goal of this project is to create a clean, user-friendly fitness studio website while demonstrating my HTML and CSS skills.
-
-## Author
-
-Bruno Nunes
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
