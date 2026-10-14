@@ -12,23 +12,23 @@ export default function MainContent() {
     : fitnessClasses.filter((item) => item.category === selectedCategory);
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full overflow-hidden" id="classes">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 w-full overflow-hidden bg-gradient-to-b from-purple-50/40 via-white to-gray-50" id="classes">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Available Classes</h2>
-          <p className="text-sm sm:text-base text-gray-500 mt-1">Filter by category and reserve your spots</p>
+          <h2 className="text-3xl font-black text-gray-900 tracking-tight">Available Classes</h2>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Filter by category and reserve your spots</p>
         </div>
 
-        {/* Real filter built with useState */}
+        {/* Filter buttons with rich active states */}
         <div className="flex flex-wrap gap-2">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-all ${
+              className={`px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all shadow-sm ${
                 selectedCategory === cat
-                  ? 'bg-purple-600 text-white shadow-sm'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-purple-600 text-white shadow-purple-200 shadow-md scale-105'
+                  : 'bg-white text-gray-700 border border-gray-200 hover:bg-purple-50 hover:text-purple-600'
               }`}
             >
               {cat}
@@ -37,33 +37,35 @@ export default function MainContent() {
         </div>
       </div>
 
-      {/* Grid displaying filtered items */}
+      {/* Grid displaying filtered items with colorful accents */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredClasses.map((item) => (
-          <div key={item.id} className="bg-white border border-gray-100 rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+          <div key={item.id} className="bg-white border-2 border-purple-100/60 rounded-3xl p-6 shadow-md hover:shadow-xl hover:border-purple-300 transition-all flex flex-col justify-between group">
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold uppercase tracking-wider text-purple-600 bg-purple-50 px-2.5 py-1 rounded-md">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-purple-700 bg-purple-100 px-3 py-1 rounded-full">
                   {item.category}
                 </span>
-                <span className="text-xs text-gray-500 font-medium">⭐ {item.rating}</span>
+                <span className="text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200/50">
+                  ⭐ {item.rating}
+                </span>
               </div>
-              <h3 className="text-lg font-bold text-gray-900">{item.title}</h3>
-              <p className="text-xs sm:text-sm text-gray-600 mt-2 line-clamp-2">{item.description}</p>
+              <h3 className="text-xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors">{item.title}</h3>
+              <p className="text-sm text-gray-600 mt-2 line-clamp-2">{item.description}</p>
               
-              <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
-                <span>⏱️ {item.duration}</span>
-                <span>👤 {item.trainer}</span>
+              <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-medium text-gray-500">
+                <span className="flex items-center gap-1">⏱️ {item.duration}</span>
+                <span className="flex items-center gap-1">👤 {item.trainer}</span>
               </div>
             </div>
 
             <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between gap-3">
               <div>
-                <span className="block text-xs text-gray-400">Passes</span>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Passes</span>
                 <QuantityStepper initial={1} max={item.spotsLeft} />
               </div>
-              <button className="flex-1 bg-gray-900 hover:bg-purple-600 text-white text-xs sm:text-sm font-semibold py-2.5 px-3 rounded-lg transition-colors">
-                Reserve
+              <button className="flex-1 bg-gray-900 hover:bg-purple-600 text-white text-xs sm:text-sm font-bold py-3 px-4 rounded-xl transition-all shadow-sm">
+                Reserve Spot
               </button>
             </div>
           </div>
