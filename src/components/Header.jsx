@@ -3,7 +3,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 w-full overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
         <div className="text-xl sm:text-2xl font-black tracking-tight text-gray-900">
-          PULSE<span className="text-purple-600">FITNESS</span>
+          PULSE<span className="text-purple-600">-FITNESS</span>
         </div>
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
           <a href="#classes" className="hover:text-purple-600 transition-colors">Classes</a>
