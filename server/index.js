@@ -89,7 +89,10 @@ app.get("/api/classes", async (req, res) => {
 
  // Create a booking
 app.post("/api/bookings", async (req, res) => {
-      console.log("POST /api/bookings route reached!");
+  console.log("POST /api/bookings route reached!");
+  console.log("Session ID:", req.sessionID);
+  console.log("Session user ID:", req.session.userId);
+  console.log("Cookie received:", req.headers.cookie);
 
   // 1. Check whether the user is logged in
   if (!req.session.userId) {
