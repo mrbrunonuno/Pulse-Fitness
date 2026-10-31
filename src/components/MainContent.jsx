@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import QuantityStepper from './QuantityStepper';
 
-const API_URL = 'https://pulse-fitness-01j6.onrender.com/api';
+const API_URL = 'https://pulse-fitness-api-apxs.onrender.com/api';
 
 export default function MainContent({ user, onShowLogin }) {
   const [selectedCategory, setSelectedCategory] = useState('All');
