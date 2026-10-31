@@ -17,7 +17,7 @@ export default function App() {
     async function checkSession() {
       try {
         const response = await fetch(
-          'https://pulse-fitness-api-apxs.onrender.com/api/auth/me',
+          'https://pulse-fitness-01j6.onrender.com/api/auth/me',
           { credentials: 'include' }
         );
 
@@ -38,7 +38,7 @@ export default function App() {
   async function handleLogout() {
     try {
       const response = await fetch(
-        'https://pulse-fitness-api-apxs.onrender.com/api/auth/logout',
+        'https://pulse-fitness-01j6.onrender.com/api/auth/logout',
         {
           method: 'POST',
           credentials: 'include',

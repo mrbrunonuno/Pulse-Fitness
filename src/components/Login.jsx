@@ -14,7 +14,7 @@ export default function Login({ onLogin, onShowSignup }) {
 
     try {
       const response = await fetch(
-        'https://pulse-fitness-api-apxs.onrender.com/api/auth/login',
+        'https://pulse-fitness-01j6.onrender.com/api/auth/login',
         {
           method: 'POST',
           headers: {
