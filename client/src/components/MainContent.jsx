@@ -14,7 +14,13 @@ export default function MainContent({ user, onShowLogin }) {
 
   const categories = ['All', 'HIIT', 'Yoga', 'Strength', 'Cardio'];
 
-  // Fetch fitness classes directly from the database
+  const trainerImages = [
+    '/images/trainer1.jpg',
+    '/images/trainer2.jpg',
+    '/images/trainer3.jpg',
+  ];
+
+  // Fetch fitness classes from the backend
   async function fetchClasses() {
     try {
       const response = await fetch(`${API_URL}/classes`);
@@ -38,11 +44,12 @@ export default function MainContent({ user, onShowLogin }) {
   }, []);
 
   // Filter classes by category
-  const filteredClasses = selectedCategory === 'All'
-    ? fitnessClasses
-    : fitnessClasses.filter(
-        (item) => item.category === selectedCategory
-      );
+  const filteredClasses =
+    selectedCategory === 'All'
+      ? fitnessClasses
+      : fitnessClasses.filter(
+          (item) => item.category === selectedCategory
+        );
 
   // Handle class booking
   async function handleBooking(classId) {
@@ -103,6 +110,7 @@ export default function MainContent({ user, onShowLogin }) {
       className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 w-full overflow-hidden bg-gradient-to-b from-purple-50/40 via-white to-gray-50"
       id="classes"
     >
+      {/* Heading and category filters */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
         <div>
           <h2 className="text-3xl font-black text-gray-900 tracking-tight">
@@ -131,6 +139,7 @@ export default function MainContent({ user, onShowLogin }) {
         </div>
       </div>
 
+      {/* Status message */}
       {message && (
         <p
           role="status"
@@ -140,18 +149,21 @@ export default function MainContent({ user, onShowLogin }) {
         </p>
       )}
 
+      {/* Loading message */}
       {loadingClasses && (
         <p className="text-center py-6">
           Loading fitness classes...
         </p>
       )}
 
+      {/* Empty state */}
       {!loadingClasses && fitnessClasses.length === 0 && (
         <p className="text-center py-6 text-gray-600">
           No fitness classes are currently available.
         </p>
       )}
 
+      {/* Fitness class cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredClasses.map((item) => (
           <div
@@ -159,6 +171,20 @@ export default function MainContent({ user, onShowLogin }) {
             className="bg-white border-2 border-purple-100/60 rounded-3xl p-6 shadow-md hover:shadow-xl hover:border-purple-300 transition-all flex flex-col justify-between group"
           >
             <div>
+              {/* Trainer image */}
+              <div className="mb-5 overflow-hidden rounded-2xl">
+                <img
+                  src={trainerImages[(item.id - 1) % trainerImages.length]}
+                  alt={`${item.trainer} - ${item.title}`}
+                  className="w-full h-48 sm:h-52 object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
+
+              {/* Category and rating */}
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-purple-700 bg-purple-100 px-3 py-1 rounded-full">
                   {item.category}
@@ -169,24 +195,29 @@ export default function MainContent({ user, onShowLogin }) {
                 </span>
               </div>
 
+              {/* Class title */}
               <h3 className="text-xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors">
                 {item.title}
               </h3>
 
+              {/* Class description */}
               <p className="text-sm text-gray-600 mt-2 line-clamp-2">
                 {item.description}
               </p>
 
+              {/* Duration and trainer */}
               <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-medium text-gray-500">
                 <span>⏱️ {item.duration}</span>
                 <span>👤 {item.trainer}</span>
               </div>
 
+              {/* Available spots */}
               <p className="mt-4 text-sm font-semibold text-purple-700">
                 {item.spotsLeft} spots available
               </p>
             </div>
 
+            {/* Booking controls */}
             <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between gap-3">
               <div>
                 <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">

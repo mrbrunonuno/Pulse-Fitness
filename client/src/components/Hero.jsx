@@ -18,6 +18,7 @@ export default function Hero() {
           <a href="#classes" className="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-6 py-3 rounded-full transition-all shadow-lg shadow-purple-600/30">
             Explore Classes
           </a>
+          <img src="/images/hero.jpg" alt="Gym training" className="w-full h-96 object-cover" />
         </div>
       </div>
     </section>

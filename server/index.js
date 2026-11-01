@@ -21,7 +21,10 @@ console.log("NODE_ENV:", process.env.NODE_ENV);
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "https://pulse-fitness-pied.vercel.app",
+    origin: [
+      "http://localhost:5173",
+      "https://pulse-fitness-pied.vercel.app",
+    ],
     credentials: true,
   })
 );
