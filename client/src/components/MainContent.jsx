@@ -44,6 +44,13 @@ export default function MainContent({ user, onShowLogin }) {
   }, []);
 
   // Filter classes by category
+  const trainers = [
+  ...new Set(
+    fitnessClasses
+      .map((item) => item.trainer)
+      .filter(Boolean)
+  ),
+];
   const filteredClasses =
     selectedCategory === 'All'
       ? fitnessClasses
@@ -176,7 +183,7 @@ export default function MainContent({ user, onShowLogin }) {
                 <img
                   src={trainerImages[(item.id - 1) % trainerImages.length]}
                   alt={`${item.trainer} - ${item.title}`}
-                  className="w-full h-48 sm:h-52 object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-56 sm:h-64 object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
@@ -256,6 +263,105 @@ export default function MainContent({ user, onShowLogin }) {
           </div>
         ))}
       </div>
+      {/* Schedule Section */}
+<section id="schedule" className="scroll-mt-24 mt-20">
+  <div className="text-center mb-10">
+    <h2 className="text-3xl font-black text-gray-900">
+      Class Schedule
+    </h2>
+    <p className="text-gray-600 mt-2">
+      Find a class that fits your routine.
+    </p>
+  </div>
+
+  <div className="overflow-x-auto bg-white rounded-2xl shadow-md">
+    <table className="w-full text-left">
+      <thead className="bg-purple-100 text-purple-900">
+        <tr>
+          <th className="p-4">Class</th>
+          <th className="p-4">Trainer</th>
+          <th className="p-4">Duration</th>
+          <th className="p-4">Schedule</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {fitnessClasses.map((item) => (
+          <tr key={item.id} className="border-t">
+            <td className="p-4 font-semibold">{item.title}</td>
+            <td className="p-4">{item.trainer}</td>
+            <td className="p-4">{item.duration}</td>
+            <td className="p-4">
+              {item.schedule || 'Schedule to be confirmed'}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+{/* Trainers Section */}
+<section id="trainers" className="scroll-mt-24 mt-20">
+  <div className="text-center mb-10">
+    <h2 className="text-3xl font-black text-gray-900">
+      Meet Our Trainers
+    </h2>
+    <p className="text-gray-600 mt-2">
+      Learn from our experienced fitness instructors.
+    </p>
+  </div>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    {trainers.map((trainer) => {
+      const trainerClasses = fitnessClasses.filter(
+        (item) => item.trainer === trainer
+      );
+
+      const trainerImagesByName = {
+        "Alex Rivera": "/images/trainer1.jpg",
+        "Elena Rostova": "/images/trainer2.jpg",
+        "Marcus Vance": "/images/trainer3.jpg",
+        "Sarah Jenkins": "/images/trainer4.jpg",
+      };
+
+      return (
+        <div
+          key={trainer}
+          className="bg-white rounded-3xl shadow-md overflow-hidden border border-purple-100 hover:shadow-xl transition-all"
+        >
+          <img
+            src={trainerImagesByName[trainer] || "/images/trainer1.jpg"}
+            alt={trainer}
+            className="w-full h-64 object-cover object-top"
+            loading="lazy"
+          />
+
+          <div className="p-6">
+            <h3 className="text-xl font-bold text-gray-900">
+              {trainer}
+            </h3>
+
+            <p className="text-sm text-purple-700 font-semibold mt-2">
+              Fitness Instructor
+            </p>
+
+            <p className="text-sm text-gray-600 mt-3 font-semibold">
+              Classes:
+            </p>
+
+            <ul className="mt-2 space-y-2">
+              {trainerClasses.map((item) => (
+                <li key={item.id} className="text-sm text-gray-700">
+                  • {item.title}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</section>
     </main>
   );
 }
