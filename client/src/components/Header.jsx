@@ -35,9 +35,13 @@ export default function Header() {
             <a
               key={link.href}
               href={link.href}
-              className={`rounded-sm transition-colors duration-200 hover:text-purple-600 ${focusStyle}`}
+              className={`group relative rounded-sm py-2 transition-colors duration-200 hover:text-purple-600 ${focusStyle}`}
             >
               {link.label}
+              <span
+                aria-hidden="true"
+                className="absolute bottom-0 left-0 h-0.5 w-0 rounded-full bg-purple-600 transition-all duration-300 ease-out group-hover:w-full"
+              />
             </a>
           ))}
         </nav>
