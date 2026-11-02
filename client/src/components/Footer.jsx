@@ -1,13 +1,95 @@
+
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  const quickLinks = [
+    { label: 'Classes', href: '#classes' },
+    { label: 'Schedule', href: '#schedule' },
+    { label: 'Trainers', href: '#trainers' },
+    { label: 'About Us', href: '#about' },
+  ];
+
   return (
-    <footer className="w-full bg-gray-900 text-gray-400 py-8 sm:py-12 px-4 sm:px-6 mt-16 border-t border-gray-800 overflow-hidden">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-center sm:text-left">
+    <footer className="mt-16 w-full overflow-hidden bg-gray-950 px-6 pt-14 text-gray-400">
+
+      <div className="mx-auto grid max-w-7xl gap-10 pb-12 sm:grid-cols-2 lg:grid-cols-3">
+
+        {/* Brand */}
         <div>
-          <p className="font-bold text-white text-base mb-1">PULSE FITNESS</p>
-          <p>&copy; {new Date().getFullYear()} Pulse Fitness. All rights reserved.</p>
+          <a href="#" className="text-2xl font-black tracking-tight text-white">
+            PULSE<span className="text-purple-500">-FITNESS</span>
+          </a>
+
+          <p className="mt-4 max-w-sm text-sm leading-7">
+            Stronger Together. Better Every Day.
+            Discover fitness classes, challenge yourself
+            and take the next step towards a healthier lifestyle.
+          </p>
         </div>
-        <p className="text-gray-500">Built with React + Tailwind CSS v4</p>
+
+        {/* Quick Links */}
+        <div>
+          <h3 className="mb-5 text-lg font-bold text-white">
+            Quick Links
+          </h3>
+
+          <ul className="space-y-3">
+            {quickLinks.map((link) => (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  className="transition-colors hover:text-purple-400"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Get Started */}
+        <div>
+          <h3 className="mb-5 text-lg font-bold text-white">
+            Start Your Fitness Journey
+          </h3>
+
+          <p className="mb-5 text-sm leading-7">
+            Find a class that suits your goals and take
+            the first step towards becoming stronger.
+          </p>
+
+          <a
+            href="#classes"
+            className="inline-block rounded-full bg-purple-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-purple-700"
+          >
+            Explore Classes
+          </a>
+        </div>
+
       </div>
+
+      {/* Bottom bar */}
+      <div className="border-t border-gray-800 py-6">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-center text-xs sm:flex-row sm:text-left">
+
+          <p>
+            &copy; {currentYear} Pulse Fitness. All rights reserved.
+          </p>
+
+          <a
+            href="#"
+            className="transition-colors hover:text-purple-400"
+          >
+            Back to top ↑
+          </a>
+
+          <p className="text-gray-500">
+            Built with React + Tailwind CSS
+          </p>
+
+        </div>
+      </div>
+
     </footer>
   );
 }
