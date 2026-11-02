@@ -66,7 +66,7 @@ export default function Footer() {
 
           <a
             href="#classes"
-            className={`inline-block rounded-full bg-purple-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-purple-700 ${focusStyle}`}
+            className={`inline-block rounded-full bg-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:bg-purple-700 hover:shadow-lg ${focusStyle}`}
           >
             Explore Classes
           </a>
