@@ -36,7 +36,7 @@ export default function About() {
 
             <a
               href="#classes"
-              className={`mt-8 inline-block rounded-lg bg-purple-600 px-7 py-3 font-semibold text-white transition hover:bg-purple-700 ${focusStyle}`}
+              className={`mt-8 inline-block rounded-lg bg-purple-600 px-7 py-3 font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:bg-purple-700 hover:shadow-lg ${focusStyle}`}
             >
               Explore Our Classes
             </a>
