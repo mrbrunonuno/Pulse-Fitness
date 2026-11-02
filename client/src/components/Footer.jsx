@@ -38,7 +38,7 @@ export default function Footer() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="transition-colors hover:text-purple-400"
+                  className="transition-all duration-300 hover:translate-x-1 hover:text-purple-400"
                 >
                   {link.label}
                 </a>
