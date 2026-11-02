@@ -49,7 +49,7 @@ export default function Header() {
         {/* Desktop Book Pass */}
         <a
           href="#classes"
-          className={`hidden rounded-full bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-purple-700 hover:shadow-md md:inline-block ${focusStyle}`}
+          className={`hidden rounded-full bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:bg-purple-700 hover:shadow-lg md:inline-block ${focusStyle}`}
         >
           Book Pass
         </a>
