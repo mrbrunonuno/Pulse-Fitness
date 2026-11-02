@@ -92,10 +92,11 @@ export default function Header() {
       {/* Mobile navigation menu */}
       <div
         id="mobile-navigation"
-        className={`overflow-hidden transition-all duration-300 md:hidden ${
+        aria-hidden={!menuOpen}
+        className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${
           menuOpen
-            ? 'max-h-80 border-t border-gray-100 opacity-100'
-            : 'max-h-0 opacity-0'
+            ? 'max-h-80 translate-y-0 border-t border-gray-100 opacity-100'
+            : 'max-h-0 -translate-y-2 border-transparent opacity-0'
         }`}
       >
         <nav className="flex flex-col gap-2 px-6 py-4 text-sm font-semibold text-gray-700">
@@ -104,6 +105,7 @@ export default function Header() {
               key={link.href}
               href={link.href}
               onClick={closeMenu}
+              tabIndex={menuOpen ? 0 : -1}
               className={`rounded-lg py-2 transition-colors hover:bg-purple-50 hover:text-purple-600 ${focusStyle}`}
             >
               {link.label}
@@ -113,6 +115,7 @@ export default function Header() {
           <a
             href="#classes"
             onClick={closeMenu}
+            tabIndex={menuOpen ? 0 : -1}
             className={`mt-2 rounded-full bg-purple-600 px-5 py-3 text-center font-semibold text-white transition-colors hover:bg-purple-700 ${focusStyle}`}
           >
             Book Pass
