@@ -6,26 +6,43 @@ export default function Header() {
 
   const closeMenu = () => setMenuOpen(false);
 
+  const navLinks = [
+    { label: 'Classes', href: '#classes' },
+    { label: 'Schedule', href: '#schedule' },
+    { label: 'Trainers', href: '#trainers' },
+    { label: 'About', href: '#about' },
+  ];
+
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6">
 
         {/* Logo */}
-        <a href="#" className="text-xl sm:text-2xl font-black tracking-tight text-gray-900">
+        <a
+          href="#"
+          className="text-xl font-black tracking-tight text-gray-900 transition-transform hover:scale-105 sm:text-2xl"
+          aria-label="Pulse Fitness homepage"
+        >
           PULSE<span className="text-purple-600">-FITNESS</span>
         </a>
 
         {/* Desktop navigation */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
-          <a href="#classes" className="hover:text-purple-600 transition-colors">Classes</a>
-          <a href="#schedule" className="hover:text-purple-600 transition-colors">Schedule</a>
-          <a href="#trainers" className="hover:text-purple-600 transition-colors">Trainers</a>
+        <nav className="hidden items-center gap-8 text-sm font-semibold text-gray-600 md:flex">
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="transition-colors duration-200 hover:text-purple-600"
+            >
+              {link.label}
+            </a>
+          ))}
         </nav>
 
         {/* Desktop Book Pass */}
         <a
           href="#classes"
-          className="hidden md:inline-block bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-all shadow-sm"
+          className="hidden rounded-full bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-purple-700 hover:shadow-md md:inline-block"
         >
           Book Pass
         </a>
@@ -34,17 +51,17 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden p-2 rounded-lg text-gray-900 hover:bg-purple-50 transition-colors"
+          className="rounded-lg p-2 text-gray-900 transition-colors hover:bg-purple-50 md:hidden"
           aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
           aria-expanded={menuOpen}
           aria-controls="mobile-navigation"
         >
           {menuOpen ? (
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           )}
@@ -54,24 +71,28 @@ export default function Header() {
       {/* Mobile navigation menu */}
       <div
         id="mobile-navigation"
-        className={`md:hidden overflow-hidden transition-all duration-300 ${
-          menuOpen ? 'max-h-64 opacity-100 border-t border-gray-100' : 'max-h-0 opacity-0'
+        className={`overflow-hidden transition-all duration-300 md:hidden ${
+          menuOpen
+            ? 'max-h-80 border-t border-gray-100 opacity-100'
+            : 'max-h-0 opacity-0'
         }`}
       >
-        <nav className="flex flex-col px-6 py-4 gap-4 text-sm font-semibold text-gray-700">
-          <a href="#classes" onClick={closeMenu} className="hover:text-purple-600 py-2">
-            Classes
-          </a>
-          <a href="#schedule" onClick={closeMenu} className="hover:text-purple-600 py-2">
-            Schedule
-          </a>
-          <a href="#trainers" onClick={closeMenu} className="hover:text-purple-600 py-2">
-            Trainers
-          </a>
+        <nav className="flex flex-col gap-2 px-6 py-4 text-sm font-semibold text-gray-700">
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              onClick={closeMenu}
+              className="rounded-lg py-2 transition-colors hover:bg-purple-50 hover:text-purple-600"
+            >
+              {link.label}
+            </a>
+          ))}
+
           <a
             href="#classes"
             onClick={closeMenu}
-            className="bg-purple-600 hover:bg-purple-700 text-white text-center font-semibold px-5 py-3 rounded-full transition-all"
+            className="mt-2 rounded-full bg-purple-600 px-5 py-3 text-center font-semibold text-white transition-colors hover:bg-purple-700"
           >
             Book Pass
           </a>
