@@ -1,5 +1,8 @@
 
 export default function About() {
+  const focusStyle =
+    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-600';
+
   return (
     <section id="about" className="bg-gray-50 px-6 py-20">
       <div className="mx-auto max-w-6xl">
@@ -33,7 +36,7 @@ export default function About() {
 
             <a
               href="#classes"
-              className="mt-8 inline-block rounded-lg bg-purple-600 px-7 py-3 font-semibold text-white transition hover:bg-purple-700"
+              className={`mt-8 inline-block rounded-lg bg-purple-600 px-7 py-3 font-semibold text-white transition hover:bg-purple-700 ${focusStyle}`}
             >
               Explore Our Classes
             </a>
@@ -44,8 +47,11 @@ export default function About() {
             <img
               src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=900"
               alt="Modern fitness gym with workout equipment"
-              className="h-80 w-full object-cover md:h-[420px]"
+              width="900"
+              height="600"
+              className="h-80 w-full object-cover transition-transform duration-500 hover:scale-105 md:h-[420px]"
               loading="lazy"
+              decoding="async"
             />
           </div>
 
@@ -55,7 +61,7 @@ export default function About() {
         <div className="mt-20 grid gap-6 md:grid-cols-3">
 
           <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-purple-300 hover:shadow-xl">
-            <div className="mb-5 text-4xl">🎯</div>
+            <div className="mb-5 text-4xl" aria-hidden="true">🎯</div>
             <h3 className="mb-3 text-xl font-bold text-gray-900">
               Our Mission
             </h3>
@@ -66,7 +72,7 @@ export default function About() {
           </div>
 
           <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-purple-300 hover:shadow-xl">
-            <div className="mb-5 text-4xl">🤝</div>
+            <div className="mb-5 text-4xl" aria-hidden="true">🤝</div>
             <h3 className="mb-3 text-xl font-bold text-gray-900">
               Our Community
             </h3>
@@ -77,7 +83,7 @@ export default function About() {
           </div>
 
           <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-purple-300 hover:shadow-xl">
-            <div className="mb-5 text-4xl">💪</div>
+            <div className="mb-5 text-4xl" aria-hidden="true">💪</div>
             <h3 className="mb-3 text-xl font-bold text-gray-900">
               Our Goal
             </h3>
