@@ -1,113 +1,111 @@
-# Pulse Fitness 🏋️
+# Pulse Fitness
 
-A responsive fitness class booking platform where users can explore fitness classes, create accounts, reserve spots and securely purchase class passes using Stripe Checkout.
+A responsive fitness website that helps users explore fitness classes, view schedules, learn about the gym and purchase class passes online.
 
-**Live Website:** https://pulse-fitness-pied.vercel.app/
+## Live Website
 
-**Backend API:** https://pulse-fitness-01j6.onrender.com
+- **Frontend:** https://pulse-fitness-pied.vercel.app/
+- **Backend API:** https://pulse-fitness-01j6.onrender.com
+- **GitHub Repository:** https://github.com/mrbrunonuno/Pulse-Fitness
 
-**GitHub Repository:** https://github.com/mrbrunonuno/Pulse-Fitness
+## Features
 
----
+### Homepage
+- Responsive homepage layout.
+- Fitness class information.
+- Clear navigation to the main website sections.
 
-## 🚀 Features
+### About Section
+- Introduction to Pulse Fitness.
+- Our Mission, Our Community and Our Goal cards.
+- Fitness image with descriptive alternative text.
+- Purple branding and interactive hover effects.
 
-- Responsive fitness website built with React and Tailwind CSS.
-- Browse fitness classes and filter by category.
-- View class descriptions, trainers, ratings, prices and available spots.
+### Header and Navigation
+- Responsive desktop and mobile navigation.
+- Sticky header.
+- Mobile hamburger menu.
+- Smooth mobile menu opening and closing animation.
+- Navigation menu closes after selecting a link.
+- Animated underline effects on desktop navigation.
+- Keyboard-accessible navigation controls.
+
+### Class Schedule
+- Displays available fitness classes.
+- Shows class names, trainers, durations and schedules.
+- Responsive table layout for smaller screens.
+- Improved mobile text sizing and column spacing.
+
+### Footer
+- Responsive footer layout.
+- Brand information and quick navigation links.
+- Call-to-action button.
+- Interactive hover effects and keyboard focus styling.
+
+### Authentication
 - User registration and login.
 - Session-based authentication.
-- Reserve fitness class spots.
-- Select the number of passes to purchase.
-- Stripe Checkout integration using test mode.
-- Secure payment confirmation through Stripe webhooks.
-- Automatic order status updates after successful payment.
-- PostgreSQL database integration using Neon.
-- Order confirmation page displaying payment details.
+- Authentication check through the `/api/auth/me` endpoint.
 
-## 🛠️ Technologies Used
+### Online Payments
+- Stripe Checkout integration.
+- Purchase fitness class passes.
+- Payment confirmation and order details.
+- Stripe webhook integration for payment status updates.
 
-### Frontend
+## Technology Stack
+
+**Frontend**
 - React
 - Vite
 - Tailwind CSS
 - JavaScript
-- HTML5
 
-### Backend
+**Backend**
 - Node.js
 - Express.js
 - PostgreSQL
 - Neon Database
-- Express Session
-- Stripe API
 
-### Development & Deployment
+**Payments**
+- Stripe Checkout
+- Stripe Webhooks
+
+**Development and Deployment**
 - Git and GitHub
 - Visual Studio Code
-- Vercel (Frontend)
-- Render (Backend)
-- Stripe Dashboard
+- Vercel (frontend)
+- Render (backend)
 
-## 💳 Stripe Payment Integration
+## Database
 
-Pulse Fitness uses Stripe Checkout in test mode to process fitness class payments.
+The application uses PostgreSQL hosted through Neon.
 
-The checkout process:
+Database functionality includes:
+- User accounts
+- Fitness classes
+- Bookings
+- Orders
+- Order items
+- User sessions
 
-1. User logs into their account.
-2. User selects a fitness class and quantity.
-3. Backend validates the booking and retrieves the price from the database.
-4. An order is created with a pending payment status.
-5. User is redirected to Stripe Checkout.
-6. Stripe processes the test payment.
-7. Stripe sends a verified webhook event to the backend.
-8. The order is updated to paid after successful payment.
-9. User is redirected to the confirmation page.
-
-**Test card details:**
-
-- Card number: `4242 4242 4242 4242`
-- Expiry date: Any future date
-- CVC: Any three digits
-
-Only use Stripe test card details for testing.
-
-## 🗄️ Database
-
-The project uses PostgreSQL hosted on Neon.
-
-Main database tables include:
-
-- `users` – stores registered user information.
-- `fitness_classes` – stores fitness class information and available spots.
-- `bookings` – stores class reservations.
-- `orders` – stores payment orders and Stripe references.
-- `order_items` – stores the classes and quantities purchased.
-- `session` – stores user login sessions.
-
-## ⚙️ Installation and Setup
+## Local Development Setup
 
 ### 1. Clone the repository
 
 ```bash
 git clone https://github.com/mrbrunonuno/Pulse-Fitness.git
-```
-
-### 2. Navigate to the project
-
-```bash
 cd Pulse-Fitness
 ```
 
-### 3. Install frontend dependencies
+### 2. Install frontend dependencies
 
 ```bash
 cd client
 npm install
 ```
 
-### 4. Configure frontend environment variables
+### 3. Configure frontend environment
 
 Create a `.env.local` file inside the `client` folder:
 
@@ -115,83 +113,62 @@ Create a `.env.local` file inside the `client` folder:
 VITE_API_URL=http://localhost:5000/api
 ```
 
-### 5. Install backend dependencies
+### 4. Start the frontend
+
+```bash
+npm run dev
+```
+
+### 5. Start the backend
 
 Open another terminal:
 
 ```bash
 cd server
 npm install
+node index.js
 ```
 
-### 6. Configure backend environment variables
+Configure the required backend environment variables in your local environment before starting the server. Never commit passwords, API keys or secret values to GitHub.
 
-Create a `.env` file inside the `server` folder:
+## Payment Testing
 
-```env
-PORT=5000
-NODE_ENV=development
-CLIENT_URL=http://localhost:5173
-DATABASE_URL=your_neon_database_url
-SESSION_SECRET=your_session_secret
-STRIPE_SECRET_KEY=your_stripe_test_secret_key
-STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
-```
+Stripe test mode was used to verify the checkout process.
 
-Never commit your `.env` or `.env.local` files to GitHub.
+**Test card:**
 
-### 7. Start the backend
+- Card number: `4242 4242 4242 4242`
+- Expiry date: Any future date
+- CVC: Any three digits
 
-From the `server` folder:
+Payments made with this test card are simulated and do not represent real transactions.
 
-```bash
-npm run dev
-```
+## Deployment
 
-### 8. Start the frontend
-
-From the `client` folder:
-
-```bash
-npm run dev
-```
-
-Open the local development URL displayed by Vite, usually:
-
-http://localhost:5173
-
-## 🌍 Deployment
-
-| Component | Hosting |
+| Service | Purpose |
 |---|---|
-| Frontend | Vercel |
-| Backend | Render |
-| Database | Neon PostgreSQL |
-| Payment gateway | Stripe |
+| Vercel | Frontend hosting |
+| Render | Backend hosting |
+| Neon | PostgreSQL database |
+| Stripe | Test checkout and payment processing |
+| GitHub | Source code and version control |
 
-## ✅ Payment Testing
+## Testing and Quality Improvements
 
-A successful Stripe test transaction was completed and verified.
+The project includes ongoing improvements to:
 
-**Verified test order:**
+- Responsive layouts across desktop and mobile.
+- Navigation and keyboard accessibility.
+- Mobile menu behaviour.
+- Class schedule readability.
+- Interactive hover effects.
+- Authentication and session handling.
+- Stripe checkout and payment confirmation.
 
-| Detail | Result |
-|---|---|
-| Order ID | 11 |
-| Fitness class | High-Intensity Interval Training |
-| Quantity | 1 |
-| Total | R150.00 |
-| Currency | ZAR |
-| Payment status | Paid |
+Changes are tested before being committed to help protect existing functionality.
 
-The order and order items were also verified directly in the Neon PostgreSQL database.
-
-## 👨‍💻 Author
+## Developer
 
 **Bruno Nunes**
 
-GitHub: https://github.com/mrbrunonuno
-
----
-
-*Pulse Fitness – Train smarter. Get stronger. Live healthier.*
+Pulse Fitness – Fitness Website Project
