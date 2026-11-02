@@ -2,7 +2,9 @@
 import { useEffect, useState } from 'react';
 import QuantityStepper from './QuantityStepper';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+console.log('Pulse Fitness API URL:', API_URL);
 
 export default function MainContent({ user, onShowLogin }) {
   const [selectedCategory, setSelectedCategory] = useState('All');

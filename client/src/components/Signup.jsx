@@ -1,6 +1,8 @@
 
 import { useState } from 'react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 export default function Signup({ onSignup, onShowLogin }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -15,7 +17,7 @@ export default function Signup({ onSignup, onShowLogin }) {
 
     try {
       const response = await fetch(
-        'http://localhost:5000/api/auth/signup',
+        `${API_URL}/auth/signup`,
         {
           method: 'POST',
           headers: {
