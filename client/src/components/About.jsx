@@ -60,7 +60,7 @@ export default function About() {
         {/* Our values */}
         <div className="mt-20 grid gap-6 md:grid-cols-3">
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-purple-300 hover:shadow-xl">
+          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all duration-500 ease-out hover:-translate-y-2 hover:scale-[1.02] hover:border-purple-300 hover:shadow-xl">
             <div className="mb-5 text-4xl" aria-hidden="true">🎯</div>
             <h3 className="mb-3 text-xl font-bold text-gray-900">
               Our Mission
@@ -71,7 +71,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-purple-300 hover:shadow-xl">
+          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all duration-500 ease-out hover:-translate-y-2 hover:scale-[1.02] hover:border-purple-300 hover:shadow-xl">
             <div className="mb-5 text-4xl" aria-hidden="true">🤝</div>
             <h3 className="mb-3 text-xl font-bold text-gray-900">
               Our Community
@@ -82,7 +82,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-purple-300 hover:shadow-xl">
+          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm transition-all duration-500 ease-out hover:-translate-y-2 hover:scale-[1.02] hover:border-purple-300 hover:shadow-xl">
             <div className="mb-5 text-4xl" aria-hidden="true">💪</div>
             <h3 className="mb-3 text-xl font-bold text-gray-900">
               Our Goal
