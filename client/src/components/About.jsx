@@ -8,7 +8,7 @@ export default function About() {
         <div className="grid items-center gap-12 md:grid-cols-2">
 
           <div>
-            <p className="mb-3 font-bold uppercase tracking-widest text-red-600">
+            <p className="mb-3 font-bold uppercase tracking-widest text-purple-600">
               About Pulse Fitness
             </p>
 
@@ -33,7 +33,7 @@ export default function About() {
 
             <a
               href="#classes"
-              className="mt-8 inline-block rounded-lg bg-red-600 px-7 py-3 font-semibold text-white transition hover:bg-red-700"
+              className="mt-8 inline-block rounded-lg bg-purple-600 px-7 py-3 font-semibold text-white transition hover:bg-purple-700"
             >
               Explore Our Classes
             </a>
