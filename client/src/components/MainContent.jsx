@@ -341,6 +341,7 @@ export default function MainContent({ user, onShowLogin }) {
         ))}
       </div>
 
+      
       {/* Schedule Section */}
       <section id="schedule" className="scroll-mt-24 mt-20">
         <div className="text-center mb-10">
@@ -353,25 +354,31 @@ export default function MainContent({ user, onShowLogin }) {
           </p>
         </div>
 
-        <div className="overflow-x-auto bg-white rounded-2xl shadow-md">
-          <table className="w-full text-left">
+        <div className="overflow-hidden rounded-2xl bg-white shadow-md">
+          <table className="w-full table-fixed text-left text-[10px] sm:text-sm">
             <thead className="bg-purple-100 text-purple-900">
               <tr>
-                <th className="p-4">Class</th>
-                <th className="p-4">Trainer</th>
-                <th className="p-4">Duration</th>
-                <th className="p-4">Schedule</th>
+                <th className="w-[32%] px-2 py-3 sm:px-4">Class</th>
+                <th className="w-[24%] px-2 py-3 sm:px-4">Trainer</th>
+                <th className="w-[15%] px-1 py-3 sm:px-4">Duration</th>
+                <th className="w-[29%] px-2 py-3 sm:px-4">Schedule</th>
               </tr>
             </thead>
 
             <tbody>
               {fitnessClasses.map((item) => (
-                <tr key={item.id} className="border-t">
-                  <td className="p-4 font-semibold">{item.title}</td>
-                  <td className="p-4">{item.trainer}</td>
-                  <td className="p-4">{item.duration}</td>
-                  <td className="p-4">
-                    {item.schedule || 'Schedule to be confirmed'}
+                <tr key={item.id} className="border-t border-gray-200">
+                  <td className="break-words px-2 py-3 font-semibold sm:px-4">
+                    {item.title}
+                  </td>
+                  <td className="break-words px-2 py-3 sm:px-4">
+                    {item.trainer}
+                  </td>
+                  <td className="break-words px-1 py-3 sm:px-4">
+                    {item.duration}
+                  </td>
+                  <td className="break-words px-2 py-3 sm:px-4">
+                    {item.schedule || 'To be confirmed'}
                   </td>
                 </tr>
               ))}
@@ -379,6 +386,7 @@ export default function MainContent({ user, onShowLogin }) {
           </table>
         </div>
       </section>
+
 
       {/* Trainers Section */}
       <section id="trainers" className="scroll-mt-24 mt-20">
