@@ -13,7 +13,7 @@ export default function Footer() {
     'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400';
 
   return (
-    <footer className="mt-16 w-full overflow-hidden bg-gray-950 px-6 pt-14 text-gray-400">
+    <footer className="mt-16 w-full overflow-hidden border-t-4 border-purple-600 bg-gray-950 px-6 pt-14 text-gray-400">
       <div className="mx-auto grid max-w-7xl gap-10 pb-12 sm:grid-cols-2 lg:grid-cols-3">
 
         {/* Brand */}
