@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import QuantityStepper from './QuantityStepper';
 
-const API_URL = 'https://pulse-fitness-api-apxs.onrender.com/api';
+const API_URL = 'http://localhost:5000/api';
 
 export default function MainContent({ user, onShowLogin }) {
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -10,6 +10,7 @@ export default function MainContent({ user, onShowLogin }) {
   const [quantities, setQuantities] = useState({});
   const [message, setMessage] = useState('');
   const [booking, setBooking] = useState(false);
+  const [checkingOut, setCheckingOut] = useState(false);
   const [loadingClasses, setLoadingClasses] = useState(true);
 
   const categories = ['All', 'HIIT', 'Yoga', 'Strength', 'Cardio'];
@@ -43,14 +44,16 @@ export default function MainContent({ user, onShowLogin }) {
     fetchClasses();
   }, []);
 
-  // Filter classes by category
+  // Get unique trainers
   const trainers = [
-  ...new Set(
-    fitnessClasses
-      .map((item) => item.trainer)
-      .filter(Boolean)
-  ),
-];
+    ...new Set(
+      fitnessClasses
+        .map((item) => item.trainer)
+        .filter(Boolean)
+    ),
+  ];
+
+  // Filter classes by category
   const filteredClasses =
     selectedCategory === 'All'
       ? fitnessClasses
@@ -102,13 +105,59 @@ export default function MainContent({ user, onShowLogin }) {
 
       // Refresh available spots from Neon
       await fetchClasses();
-
     } catch (error) {
       setMessage(
         error.message || 'Unable to complete your booking.'
       );
     } finally {
       setBooking(false);
+    }
+  }
+
+  // Handle Stripe checkout
+  async function handleCheckout(classId) {
+    if (!user) {
+      onShowLogin();
+      return;
+    }
+
+    const quantity = quantities[classId] || 1;
+
+    setMessage('');
+    setCheckingOut(true);
+
+    try {
+      const response = await fetch(`${API_URL}/checkout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          classId,
+          quantity,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || 'Unable to start checkout.'
+        );
+      }
+
+      if (!data.checkoutUrl) {
+        throw new Error('Stripe did not return a checkout URL.');
+      }
+
+      // Redirect to Stripe's hosted checkout page
+      window.location.href = data.checkoutUrl;
+    } catch (error) {
+      setMessage(
+        error.message || 'Checkout failed. Please try again.'
+      );
+      setCheckingOut(false);
     }
   }
 
@@ -218,8 +267,16 @@ export default function MainContent({ user, onShowLogin }) {
                 <span>👤 {item.trainer}</span>
               </div>
 
+              {/* Price */}
+              <p className="mt-4 text-lg font-bold text-gray-900">
+                R{Number(item.price || 150).toFixed(2)}
+                <span className="text-xs font-medium text-gray-500">
+                  {' '}per pass
+                </span>
+              </p>
+
               {/* Available spots */}
-              <p className="mt-4 text-sm font-semibold text-purple-700">
+              <p className="mt-2 text-sm font-semibold text-purple-700">
                 {item.spotsLeft} spots available
               </p>
             </div>
@@ -244,124 +301,146 @@ export default function MainContent({ user, onShowLogin }) {
                 />
               </div>
 
-              <button
-                onClick={() => handleBooking(item.id)}
-                disabled={
-                  booking ||
-                  loadingClasses ||
-                  item.spotsLeft < 1
-                }
-                className="flex-1 bg-gray-900 hover:bg-purple-600 text-white text-xs sm:text-sm font-bold py-3 px-4 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {item.spotsLeft < 1
-                  ? 'Fully Booked'
-                  : booking
-                    ? 'Booking...'
-                    : 'Reserve Spot'}
-              </button>
+              <div className="flex-1 flex flex-col gap-2">
+                {/* Stripe checkout button */}
+                <button
+                  onClick={() => handleCheckout(item.id)}
+                  disabled={
+                    checkingOut ||
+                    booking ||
+                    loadingClasses ||
+                    item.spotsLeft < 1
+                  }
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white text-xs sm:text-sm font-bold py-3 px-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {item.spotsLeft < 1
+                    ? 'Fully Booked'
+                    : checkingOut
+                      ? 'Redirecting...'
+                      : 'Buy Now'}
+                </button>
+
+                {/* Existing booking button */}
+                <button
+                  onClick={() => handleBooking(item.id)}
+                  disabled={
+                    booking ||
+                    checkingOut ||
+                    loadingClasses ||
+                    item.spotsLeft < 1
+                  }
+                  className="w-full bg-gray-900 hover:bg-gray-700 text-white text-xs sm:text-sm font-bold py-3 px-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {booking ? 'Booking...' : 'Reserve Spot'}
+                </button>
+              </div>
             </div>
           </div>
         ))}
       </div>
+
       {/* Schedule Section */}
-<section id="schedule" className="scroll-mt-24 mt-20">
-  <div className="text-center mb-10">
-    <h2 className="text-3xl font-black text-gray-900">
-      Class Schedule
-    </h2>
-    <p className="text-gray-600 mt-2">
-      Find a class that fits your routine.
-    </p>
-  </div>
+      <section id="schedule" className="scroll-mt-24 mt-20">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-black text-gray-900">
+            Class Schedule
+          </h2>
 
-  <div className="overflow-x-auto bg-white rounded-2xl shadow-md">
-    <table className="w-full text-left">
-      <thead className="bg-purple-100 text-purple-900">
-        <tr>
-          <th className="p-4">Class</th>
-          <th className="p-4">Trainer</th>
-          <th className="p-4">Duration</th>
-          <th className="p-4">Schedule</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {fitnessClasses.map((item) => (
-          <tr key={item.id} className="border-t">
-            <td className="p-4 font-semibold">{item.title}</td>
-            <td className="p-4">{item.trainer}</td>
-            <td className="p-4">{item.duration}</td>
-            <td className="p-4">
-              {item.schedule || 'Schedule to be confirmed'}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-</section>
-{/* Trainers Section */}
-<section id="trainers" className="scroll-mt-24 mt-20">
-  <div className="text-center mb-10">
-    <h2 className="text-3xl font-black text-gray-900">
-      Meet Our Trainers
-    </h2>
-    <p className="text-gray-600 mt-2">
-      Learn from our experienced fitness instructors.
-    </p>
-  </div>
-
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    {trainers.map((trainer) => {
-      const trainerClasses = fitnessClasses.filter(
-        (item) => item.trainer === trainer
-      );
-
-      const trainerImagesByName = {
-        "Alex Rivera": "/images/trainer1.jpg",
-        "Elena Rostova": "/images/trainer2.jpg",
-        "Marcus Vance": "/images/trainer3.jpg",
-        "Sarah Jenkins": "/images/trainer4.jpg",
-      };
-
-      return (
-        <div
-          key={trainer}
-          className="bg-white rounded-3xl shadow-md overflow-hidden border border-purple-100 hover:shadow-xl transition-all"
-        >
-          <img
-            src={trainerImagesByName[trainer] || "/images/trainer1.jpg"}
-            alt={trainer}
-            className="w-full h-64 object-cover object-top"
-            loading="lazy"
-          />
-
-          <div className="p-6">
-            <h3 className="text-xl font-bold text-gray-900">
-              {trainer}
-            </h3>
-
-            <p className="text-sm text-purple-700 font-semibold mt-2">
-              Fitness Instructor
-            </p>
-
-            <p className="text-sm text-gray-600 mt-3 font-semibold">
-              Classes:
-            </p>
-
-            <ul className="mt-2 space-y-2">
-              {trainerClasses.map((item) => (
-                <li key={item.id} className="text-sm text-gray-700">
-                  • {item.title}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <p className="text-gray-600 mt-2">
+            Find a class that fits your routine.
+          </p>
         </div>
-      );
-    })}
-  </div>
-</section>
+
+        <div className="overflow-x-auto bg-white rounded-2xl shadow-md">
+          <table className="w-full text-left">
+            <thead className="bg-purple-100 text-purple-900">
+              <tr>
+                <th className="p-4">Class</th>
+                <th className="p-4">Trainer</th>
+                <th className="p-4">Duration</th>
+                <th className="p-4">Schedule</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {fitnessClasses.map((item) => (
+                <tr key={item.id} className="border-t">
+                  <td className="p-4 font-semibold">{item.title}</td>
+                  <td className="p-4">{item.trainer}</td>
+                  <td className="p-4">{item.duration}</td>
+                  <td className="p-4">
+                    {item.schedule || 'Schedule to be confirmed'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Trainers Section */}
+      <section id="trainers" className="scroll-mt-24 mt-20">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-black text-gray-900">
+            Meet Our Trainers
+          </h2>
+
+          <p className="text-gray-600 mt-2">
+            Learn from our experienced fitness instructors.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {trainers.map((trainer) => {
+            const trainerClasses = fitnessClasses.filter(
+              (item) => item.trainer === trainer
+            );
+
+            const trainerImagesByName = {
+              'Alex Rivera': '/images/trainer1.jpg',
+              'Elena Rostova': '/images/trainer2.jpg',
+              'Marcus Vance': '/images/trainer3.jpg',
+              'Sarah Jenkins': '/images/trainer4.jpg',
+            };
+
+            return (
+              <div
+                key={trainer}
+                className="bg-white rounded-3xl shadow-md overflow-hidden border border-purple-100 hover:shadow-xl transition-all"
+              >
+                <img
+                  src={trainerImagesByName[trainer] || '/images/trainer1.jpg'}
+                  alt={trainer}
+                  className="w-full h-64 object-cover object-top"
+                  loading="lazy"
+                />
+
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-gray-900">
+                    {trainer}
+                  </h3>
+
+                  <p className="text-sm text-purple-700 font-semibold mt-2">
+                    Fitness Instructor
+                  </p>
+
+                  <p className="text-sm text-gray-600 mt-3 font-semibold">
+                    Classes:
+                  </p>
+
+                  <ul className="mt-2 space-y-2">
+                    {trainerClasses.map((item) => (
+                      <li key={item.id} className="text-sm text-gray-700">
+                        • {item.title}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
     </main>
   );
 }

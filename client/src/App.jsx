@@ -8,18 +8,23 @@ import Footer from './components/Footer';
 import Login from './components/Login';
 import Signup from './components/Signup';
 
+const API_URL = 'http://localhost:5000/api';
+
 export default function App() {
   const [page, setPage] = useState('home');
   const [user, setUser] = useState(null);
   const [checkingSession, setCheckingSession] = useState(true);
+  const [order, setOrder] = useState(null);
+  const [orderItems, setOrderItems] = useState([]);
+  const [paymentMessage, setPaymentMessage] = useState('');
 
+  // Check login session
   useEffect(() => {
     async function checkSession() {
       try {
-        const response = await fetch(
-          'https://pulse-fitness-api-apxs.onrender.com/api/auth/me',
-          { credentials: 'include' }
-        );
+        const response = await fetch(`${API_URL}/auth/me`, {
+          credentials: 'include',
+        });
 
         if (response.ok) {
           const data = await response.json();
@@ -35,15 +40,82 @@ export default function App() {
     checkSession();
   }, []);
 
+  // Check Stripe payment and poll for webhook confirmation
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const checkoutStatus = params.get('checkout');
+    const orderId = params.get('order_id');
+
+    if (checkoutStatus === 'cancelled') {
+      setPaymentMessage('Your checkout was cancelled. No payment was completed.');
+      window.history.replaceState({}, '', '/');
+      return;
+    }
+
+    if (checkoutStatus !== 'success' || !orderId) {
+      return;
+    }
+
+    let cancelled = false;
+    let attempts = 0;
+    const maxAttempts = 10;
+
+    async function checkOrder() {
+      try {
+        const response = await fetch(`${API_URL}/orders/${orderId}`, {
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('Could not retrieve your order.');
+        }
+
+        const data = await response.json();
+
+        if (cancelled) return;
+
+        setOrder(data.order);
+        setOrderItems(data.items || []);
+
+        if (data.order.status === 'paid') {
+          setPaymentMessage('Your payment was successful!');
+          window.history.replaceState({}, '', '/');
+          return;
+        }
+
+        attempts++;
+
+        if (attempts >= maxAttempts) {
+          setPaymentMessage(
+            'Your payment is being confirmed. Please refresh this page shortly.'
+          );
+          return;
+        }
+
+        setPaymentMessage('Waiting for payment confirmation...');
+        setTimeout(checkOrder, 2000);
+      } catch (error) {
+        console.error('Order verification error:', error);
+
+        if (!cancelled) {
+          setPaymentMessage('Unable to verify your order. Please try again.');
+        }
+      }
+    }
+
+    checkOrder();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   async function handleLogout() {
     try {
-      const response = await fetch(
-        'https://pulse-fitness-api-apxs.onrender.com/api/auth/logout',
-        {
-          method: 'POST',
-          credentials: 'include',
-        }
-      );
+      const response = await fetch(`${API_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
 
       if (!response.ok) {
         throw new Error('Logout failed.');
@@ -120,10 +192,40 @@ export default function App() {
             </div>
           )}
 
+          {paymentMessage && (
+            <div className="mx-auto my-6 w-full max-w-4xl rounded-xl border border-green-200 bg-green-50 p-6">
+              <h2 className="text-xl font-bold">
+                {order?.status === 'paid'
+                  ? 'Payment Successful!'
+                  : 'Payment Status'}
+              </h2>
+
+              <p className="mt-2">{paymentMessage}</p>
+
+              {order && (
+                <div className="mt-4 space-y-2">
+                  <p>Order number: #{order.id}</p>
+                  <p>
+                    Total: R{Number(order.total_amount).toFixed(2)}
+                  </p>
+                  <p>
+                    Status: <strong>{order.status}</strong>
+                  </p>
+
+                  {orderItems.map((item) => (
+                    <p key={item.class_id}>
+                      {item.class_title} × {item.quantity}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           <MainContent
-  user={user}
-  onShowLogin={() => setPage('login')}
-/>
+            user={user}
+            onShowLogin={() => setPage('login')}
+          />
         </>
       )}
 

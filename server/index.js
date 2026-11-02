@@ -7,6 +7,7 @@ import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import pool from "./db.js";
 import { fileURLToPath } from "node:url";
+import stripe from "./stripe.js";
 
 dotenv.config({
   path: fileURLToPath(new URL("./.env", import.meta.url)),
@@ -32,6 +33,112 @@ app.use(
   })
 );
 
+// Stripe webhook - verify payments
+app.post(
+  "/api/webhooks/stripe",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    const signature = req.headers["stripe-signature"];
+
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        signature,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } catch (error) {
+      console.error("Stripe webhook signature error:", error.message);
+      return res.status(400).send(`Webhook Error: ${error.message}`);
+    }
+
+    try {
+      
+if (event.type === "checkout.session.completed") {
+  const checkoutSession = event.data.object;
+  const orderId = checkoutSession.metadata.orderId;
+
+  if (checkoutSession.payment_status === "paid" && orderId) {
+    await pool.query(
+      `UPDATE orders
+       SET status = 'paid',
+           stripe_payment_intent_id = $1,
+           updated_at = CURRENT_TIMESTAMP
+       WHERE id = $2
+         AND stripe_session_id = $3
+         AND status = 'pending'`,
+      [
+        checkoutSession.payment_intent,
+        orderId,
+        checkoutSession.id,
+      ]
+    );
+
+    console.log(`Order ${orderId} marked as paid.`);
+  }
+}
+
+
+if (event.type === "checkout.session.expired") {
+  const checkoutSession = event.data.object;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    // Only expire an order that is still pending
+    const result = await client.query(
+      `UPDATE orders
+       SET status = 'expired',
+           updated_at = CURRENT_TIMESTAMP
+       WHERE stripe_session_id = $1
+         AND status = 'pending'
+       RETURNING id`,
+      [checkoutSession.id]
+    );
+
+    // Restore spots only if this order was just expired
+    if (result.rows.length > 0) {
+      const orderId = result.rows[0].id;
+
+      const itemsResult = await client.query(
+        `SELECT class_id, quantity
+         FROM order_items
+         WHERE order_id = $1`,
+        [orderId]
+      );
+
+      for (const item of itemsResult.rows) {
+        await client.query(
+          `UPDATE fitness_classes
+           SET spots_left = spots_left + $1
+           WHERE id = $2`,
+          [item.quantity, item.class_id]
+        );
+      }
+
+      console.log(`Order ${orderId} expired. Class spots restored.`);
+    }
+
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+
+       res.json({ received: true });
+    } catch (error) {
+      console.error("Webhook processing error:", error.message);
+      res.status(500).json({ message: "Webhook processing failed." });
+    }
+  }
+);
+
 app.use(express.json());
 
 app.use(
@@ -54,76 +161,62 @@ app.use(
   })
 );
 
-// Home route
-app.get("/", (req, res) => {
-  res.json({ message: "Pulse Fitness API is running!" });
-});
-
-// Health-check route
-app.get("/api/health", (req, res) => {
-  res.json({ status: "OK", message: "Backend is healthy" });
-});
-
-// Get all fitness classes
+// Get all available fitness classes
 app.get("/api/classes", async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT
-        id,
-        name,
-        title,
-        category,
-        intensity,
-        difficulty,
-        duration,
-        trainer,
-        spots_left AS "spotsLeft",
-        rating,
-        description,
-        schedule
-      FROM fitness_classes
-      ORDER BY id ASC`
+         id,
+         title,
+         category,
+         intensity,
+         duration,
+         trainer,
+         spots_left AS "spotsLeft",
+         rating,
+         description,
+         price
+       FROM fitness_classes
+       ORDER BY id ASC`
     );
 
     res.json(result.rows);
   } catch (error) {
-    console.error("Failed to fetch fitness classes:", error.message);
+    console.error("Fetch classes error:", error.message);
+
     res.status(500).json({
-      message: "Failed to retrieve fitness classes",
+      message: "Unable to retrieve fitness classes.",
     });
   }
 });
 
-
- // Create a booking
-app.post("/api/bookings", async (req, res) => {
-  console.log("POST /api/bookings route reached!");
-  console.log("Session ID:", req.sessionID);
-  console.log("Session user ID:", req.session.userId);
-  console.log("Cookie received:", req.headers.cookie);
-
-  // 1. Check whether the user is logged in
+// Check whether the customer is logged in
+function requireAuth(req, res, next) {
   if (!req.session.userId) {
     return res.status(401).json({
-      message: "Please log in before reserving a spot.",
+      message: "Please log in before making a purchase.",
     });
   }
 
-  const { classId, quantity } = req.body;
+  next();
+}
 
-  // 2. Validate the booking details
-  const parsedClassId = Number(classId);
-  const parsedQuantity = Number(quantity);
 
+// Create a Stripe Checkout Session
+app.post("/api/checkout", requireAuth, async (req, res) => {
+  const classId = Number(req.body.classId);
+  const quantity = Number(req.body.quantity);
+
+  // Validate the customer's selection
   if (
-    !Number.isInteger(parsedClassId) ||
-    parsedClassId <= 0 ||
-    !Number.isInteger(parsedQuantity) ||
-    parsedQuantity <= 0 ||
-    parsedQuantity > 20
+    !Number.isInteger(classId) ||
+    classId <= 0 ||
+    !Number.isInteger(quantity) ||
+    quantity <= 0 ||
+    quantity > 20
   ) {
     return res.status(400).json({
-      message: "Please provide a valid class and quantity (1–20).",
+      message: "Please select a valid class and quantity.",
     });
   }
 
@@ -132,14 +225,13 @@ app.post("/api/bookings", async (req, res) => {
   try {
     await client.query("BEGIN");
 
-    // 3. Lock the class row so simultaneous bookings cannot
-    // reserve the same remaining spots.
+    // Lock the class row to prevent overselling
     const classResult = await client.query(
-      `SELECT id, title, spots_left
+      `SELECT id, title, price, spots_left
        FROM fitness_classes
        WHERE id = $1
        FOR UPDATE`,
-      [parsedClassId]
+      [classId]
     );
 
     if (classResult.rows.length === 0) {
@@ -151,42 +243,113 @@ app.post("/api/bookings", async (req, res) => {
 
     const fitnessClass = classResult.rows[0];
 
-    if (Number(fitnessClass.spots_left) < parsedQuantity) {
+    if (Number(fitnessClass.spots_left) < quantity) {
       await client.query("ROLLBACK");
       return res.status(409).json({
-        message: "Not enough spots available for this class.",
+        message: "Not enough spots available.",
       });
     }
 
-    // 4. Save the booking for the logged-in user
-    const bookingResult = await client.query(
-      `INSERT INTO bookings (user_id, class_id, quantity)
-       VALUES ($1, $2, $3)
-       RETURNING id, user_id, class_id, quantity, booking_date, status`,
-      [req.session.userId, parsedClassId, parsedQuantity]
+    const unitPrice = Number(fitnessClass.price);
+    const totalAmount = unitPrice * quantity;
+    const amountInCents = Math.round(unitPrice * 100);
+
+    if (
+      !Number.isSafeInteger(amountInCents) ||
+      amountInCents <= 0 ||
+      !Number.isFinite(totalAmount)
+    ) {
+      await client.query("ROLLBACK");
+      return res.status(400).json({
+        message: "Invalid class price.",
+      });
+    }
+
+    // Create the pending order
+    const orderResult = await client.query(
+      `INSERT INTO orders (user_id, total_amount, currency, status)
+       VALUES ($1, $2, 'zar', 'pending')
+       RETURNING id`,
+      [req.session.userId, totalAmount]
     );
 
-    // 5. Reduce the available spots
+    const orderId = orderResult.rows[0].id;
+
+    // Save the order item
+    await client.query(
+      `INSERT INTO order_items
+       (order_id, class_id, class_title, quantity, unit_price, subtotal)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [
+        orderId,
+        classId,
+        fitnessClass.title,
+        quantity,
+        unitPrice,
+        totalAmount,
+      ]
+    );
+
+    // Reserve the class spots
     await client.query(
       `UPDATE fitness_classes
        SET spots_left = spots_left - $1
        WHERE id = $2`,
-      [parsedQuantity, parsedClassId]
+      [quantity, classId]
+    );
+
+    // Create the Stripe Checkout Session
+    const checkoutSession = await stripe.checkout.sessions.create({
+      mode: "payment",
+
+      line_items: [
+        {
+          price_data: {
+            currency: "zar",
+            product_data: {
+              name: fitnessClass.title,
+            },
+            unit_amount: amountInCents,
+          },
+          quantity: quantity,
+        },
+      ],
+
+      client_reference_id: String(orderId),
+
+      metadata: {
+        orderId: String(orderId),
+        userId: String(req.session.userId),
+      },
+
+      success_url: `${process.env.CLIENT_URL}/?checkout=success&order_id=${orderId}`,
+
+      cancel_url: `${process.env.CLIENT_URL}/?checkout=cancelled`,
+    });
+
+    // Link the Stripe session to the order
+    await client.query(
+      `UPDATE orders
+       SET stripe_session_id = $1,
+           updated_at = CURRENT_TIMESTAMP
+       WHERE id = $2`,
+      [checkoutSession.id, orderId]
     );
 
     await client.query("COMMIT");
 
-    res.status(201).json({
-      message: "Booking created successfully.",
-      booking: bookingResult.rows[0],
-      classTitle: fitnessClass.title,
+    res.status(200).json({
+      message: "Checkout session created successfully.",
+      checkoutUrl: checkoutSession.url,
+      orderId: orderId,
     });
   } catch (error) {
     await client.query("ROLLBACK");
-    console.error("Booking error:", error.message);
+
+    console.error("Stripe checkout error:", error.message);
 
     res.status(500).json({
-      message: "Unable to create booking. Please try again.",
+      message: "Unable to start checkout. Please try again.",
     });
   } finally {
     client.release();
@@ -451,6 +614,61 @@ app.post("/api/auth/logout", (req, res) => {
     res.clearCookie("pulse.sid");
     res.json({ message: "Logged out successfully." });
   });
+});
+
+// Get a specific order belonging to the logged-in user
+app.get("/api/orders/:id", requireAuth, async (req, res) => {
+  const orderId = Number(req.params.id);
+
+  if (!Number.isInteger(orderId) || orderId <= 0) {
+    return res.status(400).json({
+      message: "Invalid order ID.",
+    });
+  }
+
+  try {
+    const orderResult = await pool.query(
+      `SELECT
+         id,
+         user_id,
+         total_amount,
+         currency,
+         status,
+         created_at
+       FROM orders
+       WHERE id = $1 AND user_id = $2`,
+      [orderId, req.session.userId]
+    );
+
+    if (orderResult.rows.length === 0) {
+      return res.status(404).json({
+        message: "Order not found.",
+      });
+    }
+
+    const itemsResult = await pool.query(
+      `SELECT
+         class_id,
+         class_title,
+         quantity,
+         unit_price,
+         subtotal
+       FROM order_items
+       WHERE order_id = $1`,
+      [orderId]
+    );
+
+    res.json({
+      order: orderResult.rows[0],
+      items: itemsResult.rows,
+    });
+  } catch (error) {
+    console.error("Order lookup error:", error.message);
+
+    res.status(500).json({
+      message: "Unable to retrieve order.",
+    });
+  }
 });
 
 app.listen(PORT, () => {
