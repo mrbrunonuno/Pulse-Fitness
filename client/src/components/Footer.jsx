@@ -9,14 +9,20 @@ export default function Footer() {
     { label: 'About Us', href: '#about' },
   ];
 
+  const focusStyle =
+    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-400';
+
   return (
     <footer className="mt-16 w-full overflow-hidden bg-gray-950 px-6 pt-14 text-gray-400">
-
       <div className="mx-auto grid max-w-7xl gap-10 pb-12 sm:grid-cols-2 lg:grid-cols-3">
 
         {/* Brand */}
         <div>
-          <a href="#" className="text-2xl font-black tracking-tight text-white">
+          <a
+            href="#"
+            aria-label="Pulse Fitness homepage"
+            className={`text-2xl font-black tracking-tight text-white ${focusStyle}`}
+          >
             PULSE<span className="text-purple-500">-FITNESS</span>
           </a>
 
@@ -38,7 +44,7 @@ export default function Footer() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="transition-all duration-300 hover:translate-x-1 hover:text-purple-400"
+                  className={`inline-block transition-all duration-300 hover:translate-x-1 hover:text-purple-400 ${focusStyle}`}
                 >
                   {link.label}
                 </a>
@@ -60,12 +66,11 @@ export default function Footer() {
 
           <a
             href="#classes"
-            className="inline-block rounded-full bg-purple-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-purple-700"
+            className={`inline-block rounded-full bg-purple-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-purple-700 ${focusStyle}`}
           >
             Explore Classes
           </a>
         </div>
-
       </div>
 
       {/* Bottom bar */}
@@ -78,7 +83,7 @@ export default function Footer() {
 
           <a
             href="#"
-            className="transition-colors hover:text-purple-400"
+            className={`transition-colors hover:text-purple-400 ${focusStyle}`}
           >
             Back to top ↑
           </a>
@@ -86,10 +91,8 @@ export default function Footer() {
           <p className="text-gray-500">
             Built with React + Tailwind CSS
           </p>
-
         </div>
       </div>
-
     </footer>
   );
 }
