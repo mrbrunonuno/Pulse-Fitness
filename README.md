@@ -1,6 +1,6 @@
 # Pulse Fitness
 
-A responsive fitness website that helps users explore fitness classes, view schedules, learn about the gym and purchase class passes online.
+A responsive fitness website that helps users explore fitness classes, view schedules, learn about the gym, contact the team and purchase class passes online.
 
 ## Live Website
 
@@ -15,12 +15,6 @@ A responsive fitness website that helps users explore fitness classes, view sche
 - Fitness class information.
 - Clear navigation to the main website sections.
 
-### About Section
-- Introduction to Pulse Fitness.
-- Our Mission, Our Community and Our Goal cards.
-- Fitness image with descriptive alternative text.
-- Purple branding and interactive hover effects.
-
 ### Header and Navigation
 - Responsive desktop and mobile navigation.
 - Sticky header.
@@ -29,12 +23,33 @@ A responsive fitness website that helps users explore fitness classes, view sche
 - Navigation menu closes after selecting a link.
 - Animated underline effects on desktop navigation.
 - Keyboard-accessible navigation controls.
+- Quick links to Classes, Schedule, Trainers, About and Contact.
 
 ### Class Schedule
 - Displays available fitness classes.
 - Shows class names, trainers, durations and schedules.
 - Responsive table layout for smaller screens.
 - Improved mobile text sizing and column spacing.
+
+### Trainers
+- Displays fitness trainer profiles.
+- Includes trainer information and associated fitness classes.
+- Responsive trainer card layout.
+
+### About Section
+- Introduction to Pulse Fitness.
+- Our Mission, Our Community and Our Goal cards.
+- Fitness image with descriptive alternative text.
+- Purple branding and interactive hover effects.
+
+### Contact Us
+- Modern, responsive Contact Us section.
+- Premium dark-purple design with gradient accents.
+- Contact form with Name, Email, Subject and Message fields.
+- Required field validation and input length limits.
+- Form submission feedback for success and errors.
+- Contact messages saved to Neon PostgreSQL.
+- Backend API endpoint: `/api/contact`.
 
 ### Footer
 - Responsive footer layout.
@@ -88,6 +103,9 @@ Database functionality includes:
 - Orders
 - Order items
 - User sessions
+- Contact messages
+
+Contact messages are stored in the `contact_messages` table with a unique ID, name, email, subject, message, status and submission date.
 
 ## Local Development Setup
 
@@ -115,13 +133,15 @@ VITE_API_URL=http://localhost:5000/api
 
 ### 4. Start the frontend
 
+From the `client` folder:
+
 ```bash
 npm run dev
 ```
 
-### 5. Start the backend
+### 5. Install and start the backend
 
-Open another terminal:
+Open another terminal from the project root:
 
 ```bash
 cd server
@@ -129,7 +149,9 @@ npm install
 node index.js
 ```
 
-Configure the required backend environment variables in your local environment before starting the server. Never commit passwords, API keys or secret values to GitHub.
+Configure the required backend environment variables in a local `.env` file before starting the server.
+
+Never commit passwords, database credentials, API keys or secret values to GitHub.
 
 ## Payment Testing
 
@@ -161,7 +183,8 @@ The project includes ongoing improvements to:
 - Navigation and keyboard accessibility.
 - Mobile menu behaviour.
 - Class schedule readability.
-- Interactive hover effects.
+- Interactive hover effects and animations.
+- Contact form validation and database storage.
 - Authentication and session handling.
 - Stripe checkout and payment confirmation.
 
