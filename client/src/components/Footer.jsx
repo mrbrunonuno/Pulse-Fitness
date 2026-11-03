@@ -1,12 +1,13 @@
 
-export default function Footer() {
+export default function Footer({ onNavigate }) {
   const currentYear = new Date().getFullYear();
 
   const quickLinks = [
-    { label: 'Classes', href: '#classes' },
-    { label: 'Schedule', href: '#schedule' },
-    { label: 'Trainers', href: '#trainers' },
-    { label: 'About Us', href: '#about' },
+    { label: 'Classes', id: 'classes' },
+    { label: 'Schedule', id: 'schedule' },
+    { label: 'Trainers', id: 'trainers' },
+    { label: 'About Us', id: 'about' },
+    { label: 'Contact', id: 'contact' },
   ];
 
   const focusStyle =
@@ -19,7 +20,7 @@ export default function Footer() {
         {/* Brand */}
         <div>
           <a
-            href="#"
+            href="/"
             aria-label="Pulse Fitness homepage"
             className={`text-2xl font-black tracking-tight text-white ${focusStyle}`}
           >
@@ -41,10 +42,14 @@ export default function Footer() {
 
           <ul className="space-y-3">
             {quickLinks.map((link) => (
-              <li key={link.href}>
+              <li key={link.id}>
                 <a
-                  href={link.href}
-                  className={`inline-block transition-all duration-300 hover:translate-x-1 hover:text-purple-400 ${focusStyle}`}
+                  href={`/#${link.id}`}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    onNavigate?.(link.id);
+                  }}
+                  className={`transition-colors hover:text-purple-400 ${focusStyle}`}
                 >
                   {link.label}
                 </a>
@@ -65,7 +70,11 @@ export default function Footer() {
           </p>
 
           <a
-            href="#classes"
+            href="/#classes"
+            onClick={(event) => {
+              event.preventDefault();
+              onNavigate?.('classes');
+            }}
             className={`inline-block rounded-full bg-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:bg-purple-700 hover:shadow-lg ${focusStyle}`}
           >
             Explore Classes
@@ -82,7 +91,11 @@ export default function Footer() {
           </p>
 
           <a
-            href="#"
+            href="/#top"
+            onClick={(event) => {
+              event.preventDefault();
+              onNavigate?.('top');
+            }}
             className={`transition-colors hover:text-purple-400 ${focusStyle}`}
           >
             Back to top ↑

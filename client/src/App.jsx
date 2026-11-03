@@ -14,8 +14,11 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export default function App() {
   const [page, setPage] = useState('home');
+  const [pendingSection, setPendingSection] = useState(null);
+
   const [user, setUser] = useState(null);
   const [checkingSession, setCheckingSession] = useState(true);
+
   const [order, setOrder] = useState(null);
   const [orderItems, setOrderItems] = useState([]);
   const [paymentMessage, setPaymentMessage] = useState('');
@@ -42,6 +45,24 @@ export default function App() {
     checkSession();
   }, []);
 
+  // Navigate to a homepage section after the homepage has rendered
+  useEffect(() => {
+    if (checkingSession || page !== 'home' || !pendingSection) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      document.getElementById(pendingSection)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+
+      setPendingSection(null);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [page, checkingSession, pendingSection]);
+
   // Check Stripe payment and poll for webhook confirmation
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -49,7 +70,10 @@ export default function App() {
     const orderId = params.get('order_id');
 
     if (checkoutStatus === 'cancelled') {
-      setPaymentMessage('Your checkout was cancelled. No payment was completed.');
+      setPaymentMessage(
+        'Your checkout was cancelled. No payment was completed.'
+      );
+
       window.history.replaceState({}, '', '/');
       return;
     }
@@ -95,12 +119,15 @@ export default function App() {
         }
 
         setPaymentMessage('Waiting for payment confirmation...');
+
         setTimeout(checkOrder, 2000);
       } catch (error) {
         console.error('Order verification error:', error);
 
         if (!cancelled) {
-          setPaymentMessage('Unable to verify your order. Please try again.');
+          setPaymentMessage(
+            'Unable to verify your order. Please try again.'
+          );
         }
       }
     }
@@ -112,6 +139,15 @@ export default function App() {
     };
   }, []);
 
+  // Navigate to homepage sections from Header or Footer
+  function navigateToSection(sectionId) {
+    setPendingSection(sectionId);
+    setPage('home');
+
+    window.history.pushState({}, '', `/#${sectionId}`);
+  }
+
+  // Log out
   async function handleLogout() {
     try {
       const response = await fetch(`${API_URL}/auth/logout`, {
@@ -131,23 +167,35 @@ export default function App() {
     }
   }
 
+  // Successful login
   function handleLogin(userData) {
     setUser(userData);
     setPage('home');
   }
 
+  // Successful signup
   function handleSignup(userData) {
     setUser(userData);
     setPage('home');
   }
 
   if (checkingSession) {
-    return <p className="p-8 text-center">Checking login session...</p>;
+    return (
+      <p className="p-8 text-center">
+        Checking login session...
+      </p>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 flex flex-col justify-between overflow-x-hidden">
-      <Header />
+    <div
+      id="top"
+      className="min-h-screen bg-white text-gray-900 flex flex-col justify-between overflow-x-hidden"
+    >
+      <Header
+        page={page}
+        onNavigate={navigateToSection}
+      />
 
       {page === 'login' ? (
         <Login
@@ -168,6 +216,7 @@ export default function App() {
               <p>
                 Welcome, <strong>{user.name}</strong>!
               </p>
+
               <button
                 onClick={handleLogout}
                 className="rounded-lg border border-gray-300 px-4 py-2 hover:bg-gray-100"
@@ -185,6 +234,7 @@ export default function App() {
               >
                 Log in
               </button>
+
               <button
                 onClick={() => setPage('signup')}
                 className="rounded-lg border border-gray-300 px-5 py-2 font-semibold hover:bg-gray-100"
@@ -207,9 +257,11 @@ export default function App() {
               {order && (
                 <div className="mt-4 space-y-2">
                   <p>Order number: #{order.id}</p>
+
                   <p>
                     Total: R{Number(order.total_amount).toFixed(2)}
                   </p>
+
                   <p>
                     Status: <strong>{order.status}</strong>
                   </p>
@@ -225,15 +277,17 @@ export default function App() {
           )}
 
           <MainContent
-  user={user}
-  onShowLogin={() => setPage('login')}
-/>
-<About />
-<Contact />
+            user={user}
+            onShowLogin={() => setPage('login')}
+          />
+
+          <About />
+
+          <Contact />
         </>
       )}
 
-      <Footer />
+      <Footer onNavigate={navigateToSection} />
     </div>
   );
 }

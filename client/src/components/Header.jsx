@@ -1,21 +1,30 @@
 
 import { useState } from 'react';
 
-export default function Header() {
+export default function Header({ page, onNavigate }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
 
+  const isHomePage = page === 'home';
+
   const navLinks = [
-    { label: 'Classes', href: '#classes' },
-    { label: 'Schedule', href: '#schedule' },
-    { label: 'Trainers', href: '#trainers' },
-    { label: 'About', href: '#about' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'Classes', id: 'classes' },
+    { label: 'Schedule', id: 'schedule' },
+    { label: 'Trainers', id: 'trainers' },
+    { label: 'About', id: 'about' },
+    { label: 'Contact', id: 'contact' },
   ];
 
   const focusStyle =
     'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600';
+
+  // Navigate to a section and close the mobile menu
+  const handleNavigation = (event, sectionId) => {
+    event.preventDefault();
+    onNavigate?.(sectionId);
+    closeMenu();
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur-md">
@@ -23,7 +32,13 @@ export default function Header() {
 
         {/* Logo */}
         <a
-          href="#"
+          href="/"
+          onClick={(event) => {
+            if (!isHomePage) return;
+            event.preventDefault();
+            onNavigate?.('top');
+            closeMenu();
+          }}
           className={`text-xl font-black tracking-tight text-gray-900 transition-transform hover:scale-105 sm:text-2xl ${focusStyle}`}
           aria-label="Pulse Fitness homepage"
         >
@@ -34,22 +49,20 @@ export default function Header() {
         <nav className="hidden items-center gap-6 text-sm font-semibold text-gray-600 md:flex lg:gap-8">
           {navLinks.map((link) => (
             <a
-              key={link.href}
-              href={link.href}
-              className={`group relative rounded-sm py-2 transition-colors duration-200 hover:text-purple-600 ${focusStyle}`}
+              key={link.id}
+              href={`/#${link.id}`}
+              onClick={(event) => handleNavigation(event, link.id)}
+              className={`transition-colors hover:text-purple-600 ${focusStyle}`}
             >
               {link.label}
-              <span
-                aria-hidden="true"
-                className="absolute bottom-0 left-0 h-0.5 w-0 rounded-full bg-purple-600 transition-all duration-300 ease-out group-hover:w-full"
-              />
             </a>
           ))}
         </nav>
 
         {/* Desktop Book Pass */}
         <a
-          href="#classes"
+          href="/#classes"
+          onClick={(event) => handleNavigation(event, 'classes')}
           className={`hidden rounded-full bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:bg-purple-700 hover:shadow-lg md:inline-block ${focusStyle}`}
         >
           Book Pass
@@ -73,7 +86,11 @@ export default function Header() {
               stroke="currentColor"
               strokeWidth="2"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           ) : (
             <svg
@@ -84,7 +101,11 @@ export default function Header() {
               stroke="currentColor"
               strokeWidth="2"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             </svg>
           )}
         </button>
@@ -103,9 +124,9 @@ export default function Header() {
         <nav className="flex flex-col gap-2 px-6 py-4 text-sm font-semibold text-gray-700">
           {navLinks.map((link) => (
             <a
-              key={link.href}
-              href={link.href}
-              onClick={closeMenu}
+              key={link.id}
+              href={`/#${link.id}`}
+              onClick={(event) => handleNavigation(event, link.id)}
               tabIndex={menuOpen ? 0 : -1}
               className={`rounded-lg py-2 transition-colors hover:bg-purple-50 hover:text-purple-600 ${focusStyle}`}
             >
@@ -114,8 +135,8 @@ export default function Header() {
           ))}
 
           <a
-            href="#classes"
-            onClick={closeMenu}
+            href="/#classes"
+            onClick={(event) => handleNavigation(event, 'classes')}
             tabIndex={menuOpen ? 0 : -1}
             className={`mt-2 rounded-full bg-purple-600 px-5 py-3 text-center font-semibold text-white transition-colors hover:bg-purple-700 ${focusStyle}`}
           >
