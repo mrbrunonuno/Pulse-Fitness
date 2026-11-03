@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import About from './components/About';
+import Contact from './components/Contact';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -224,10 +225,11 @@ export default function App() {
           )}
 
           <MainContent
-            user={user}
-            onShowLogin={() => setPage('login')}
-          />
-          <About />
+  user={user}
+  onShowLogin={() => setPage('login')}
+/>
+<About />
+<Contact />
         </>
       )}
 

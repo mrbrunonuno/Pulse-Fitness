@@ -671,6 +671,75 @@ app.get("/api/orders/:id", requireAuth, async (req, res) => {
   }
 });
 
+// Submit a Contact Us message
+app.post("/api/contact", async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+
+    // Validate required fields
+    if (
+      typeof name !== "string" ||
+      typeof email !== "string" ||
+      typeof subject !== "string" ||
+      typeof message !== "string" ||
+      !name.trim() ||
+      !email.trim() ||
+      !subject.trim() ||
+      !message.trim()
+    ) {
+      return res.status(400).json({
+        message: "Please complete all fields.",
+      });
+    }
+
+    // Validate field lengths
+    if (
+      name.trim().length > 100 ||
+      email.trim().length > 255 ||
+      subject.trim().length > 200 ||
+      message.trim().length > 5000
+    ) {
+      return res.status(400).json({
+        message: "One or more fields exceed the allowed length.",
+      });
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email.trim())) {
+      return res.status(400).json({
+        message: "Please enter a valid email address.",
+      });
+    }
+
+    // Save message in Neon PostgreSQL
+    const result = await pool.query(
+      `INSERT INTO contact_messages
+        (name, email, subject, message)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, created_at`,
+      [
+        name.trim(),
+        email.trim().toLowerCase(),
+        subject.trim(),
+        message.trim(),
+      ]
+    );
+
+    res.status(201).json({
+      message: "Your message has been submitted successfully.",
+      contact: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Contact form error:", error.message);
+
+    res.status(500).json({
+      message: "Unable to submit your message. Please try again.",
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Pulse Fitness API running on port ${PORT}`);
 });
