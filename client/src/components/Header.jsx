@@ -5,8 +5,8 @@ export default function Header({ page, onNavigate }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
-
-  const isHomePage = page === 'home';
+  const focusStyle =
+    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600';
 
   const navLinks = [
     { label: 'Classes', id: 'classes' },
@@ -16,15 +16,11 @@ export default function Header({ page, onNavigate }) {
     { label: 'Contact', id: 'contact' },
   ];
 
-  const focusStyle =
-    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600';
-
-  // Navigate to a section and close the mobile menu
-  const handleNavigation = (event, sectionId) => {
+  function handleNavigation(event, sectionId) {
     event.preventDefault();
     onNavigate?.(sectionId);
     closeMenu();
-  };
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur-md">
@@ -33,12 +29,7 @@ export default function Header({ page, onNavigate }) {
         {/* Logo */}
         <a
           href="/"
-          onClick={(event) => {
-            if (!isHomePage) return;
-            event.preventDefault();
-            onNavigate?.('top');
-            closeMenu();
-          }}
+          onClick={(event) => handleNavigation(event, 'top')}
           className={`text-xl font-black tracking-tight text-gray-900 transition-transform hover:scale-105 sm:text-2xl ${focusStyle}`}
           aria-label="Pulse Fitness homepage"
         >
@@ -52,9 +43,14 @@ export default function Header({ page, onNavigate }) {
               key={link.id}
               href={`/#${link.id}`}
               onClick={(event) => handleNavigation(event, link.id)}
-              className={`transition-colors hover:text-purple-600 ${focusStyle}`}
+              className={`group relative rounded-sm py-2 transition-colors duration-200 hover:text-purple-600 ${focusStyle}`}
             >
               {link.label}
+
+              <span
+                aria-hidden="true"
+                className="absolute bottom-0 left-0 h-0.5 w-0 bg-purple-600 transition-all duration-300 group-hover:w-full"
+              />
             </a>
           ))}
         </nav>
@@ -68,7 +64,7 @@ export default function Header({ page, onNavigate }) {
           Book Pass
         </a>
 
-        {/* Mobile hamburger button */}
+        {/* Mobile menu button */}
         <button
           type="button"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -111,7 +107,7 @@ export default function Header({ page, onNavigate }) {
         </button>
       </div>
 
-      {/* Mobile navigation menu */}
+      {/* Mobile navigation */}
       <div
         id="mobile-navigation"
         aria-hidden={!menuOpen}
