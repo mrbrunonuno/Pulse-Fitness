@@ -1,102 +1,92 @@
 # Pulse Fitness
 
-A responsive fitness website that helps users explore fitness classes, view schedules, learn about the gym, contact the team and purchase class passes online.
+A modern, responsive fitness website where users can explore fitness classes, view schedules, discover trainers, register or log in, contact the team and purchase fitness class passes online.
 
-## Live Website
+## Live Project
 
-- **Frontend:** https://pulse-fitness-pied.vercel.app/
+- **Live Website:** https://pulse-fitness-pied.vercel.app/
 - **Backend API:** https://pulse-fitness-01j6.onrender.com
 - **GitHub Repository:** https://github.com/mrbrunonuno/Pulse-Fitness
 
-## Features
+## Project Features
 
-### Homepage
-- Responsive homepage layout.
+### 1. Homepage
+- Responsive homepage design.
 - Fitness class information.
-- Clear navigation to the main website sections.
+- Clear navigation between website sections.
 
-### Header and Navigation
+### 2. Header and Navigation
 - Responsive desktop and mobile navigation.
 - Sticky header.
 - Mobile hamburger menu.
-- Smooth mobile menu opening and closing animation.
-- Navigation menu closes after selecting a link.
-- Animated underline effects on desktop navigation.
-- Keyboard-accessible navigation controls.
-- Quick links to Classes, Schedule, Trainers, About and Contact.
+- Smooth mobile menu animations.
+- Animated desktop navigation underline.
+- Keyboard-accessible navigation.
+- Links to Classes, Schedule, Trainers, About and Contact.
 
-### Class Schedule
+### 3. Fitness Classes and Schedule
 - Displays available fitness classes.
 - Shows class names, trainers, durations and schedules.
-- Responsive table layout for smaller screens.
-- Improved mobile text sizing and column spacing.
+- Responsive layout for desktop and mobile.
+- Class booking functionality.
 
-### Trainers
-- Displays fitness trainer profiles.
-- Includes trainer information and associated fitness classes.
-- Responsive trainer card layout.
+### 4. Trainers
+- Trainer profiles and information.
+- Associated fitness classes.
+- Responsive trainer cards.
 
-### About Section
+### 5. About Us
 - Introduction to Pulse Fitness.
-- Our Mission, Our Community and Our Goal cards.
-- Fitness image with descriptive alternative text.
-- Purple branding and interactive hover effects.
+- Mission, Community and Goals sections.
+- Fitness imagery with descriptive alternative text.
 
-### Contact Us
-- Modern, responsive Contact Us section.
-- Premium dark-purple design with gradient accents.
+### 6. Contact Us
+- Responsive Contact Us section.
 - Contact form with Name, Email, Subject and Message fields.
-- Required field validation and input length limits.
-- Form submission feedback for success and errors.
-- Contact messages saved to Neon PostgreSQL.
-- Backend API endpoint: `/api/contact`.
+- Form validation.
+- Success and error feedback.
+- Contact messages stored in Neon PostgreSQL.
+- Backend endpoint: `/api/contact`.
 
-### Footer
-- Responsive footer layout.
-- Brand information and quick navigation links.
-- Call-to-action button.
-- Interactive hover effects and keyboard focus styling.
-
-### Authentication
-- User registration and login.
+### 7. User Authentication
+- User registration.
+- User login.
 - Session-based authentication.
-- Authentication check through the `/api/auth/me` endpoint.
+- Login session verification.
+- Logout functionality.
 
-### Online Payments
+### 8. Online Payments
 - Stripe Checkout integration.
-- Purchase fitness class passes.
-- Payment confirmation and order details.
-- Stripe webhook integration for payment status updates.
+- Fitness class pass purchases.
+- Order creation and tracking.
+- Stripe webhook integration.
+- Payment confirmation and order status updates.
+
+### 9. Footer
+- Responsive footer design.
+- Quick navigation links.
+- Explore Classes call-to-action.
+- Hover effects and keyboard focus styling.
 
 ## Technology Stack
 
-**Frontend**
-- React
-- Vite
-- Tailwind CSS
-- JavaScript
-
-**Backend**
-- Node.js
-- Express.js
-- PostgreSQL
-- Neon Database
-
-**Payments**
-- Stripe Checkout
-- Stripe Webhooks
-
-**Development and Deployment**
-- Git and GitHub
-- Visual Studio Code
-- Vercel (frontend)
-- Render (backend)
+| Area | Technologies |
+|---|---|
+| Frontend | React, Vite, JavaScript |
+| Styling | Tailwind CSS |
+| Backend | Node.js, Express.js |
+| Database | PostgreSQL, Neon |
+| Payments | Stripe Checkout, Stripe Webhooks |
+| Deployment | Vercel, Render |
+| Version Control | Git, GitHub |
+| Development | Visual Studio Code |
 
 ## Database
 
-The application uses PostgreSQL hosted through Neon.
+Pulse Fitness uses PostgreSQL hosted through Neon.
 
 Database functionality includes:
+
 - User accounts
 - Fitness classes
 - Bookings
@@ -105,9 +95,40 @@ Database functionality includes:
 - User sessions
 - Contact messages
 
-Contact messages are stored in the `contact_messages` table with a unique ID, name, email, subject, message, status and submission date.
+Contact form submissions are stored in the `contact_messages` table.
+
+## Project Structure
+
+```text
+Pulse-Fitness/
+│
+├── client/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── package.json
+│   └── .env.local
+│
+├── server/
+│   ├── index.js
+│   ├── seed.js
+│   └── package.json
+│
+├── .gitignore
+└── README.md
+```
 
 ## Local Development Setup
+
+### Requirements
+
+- Node.js and npm
+- Git
+- Visual Studio Code
+- Neon PostgreSQL database
+- Stripe account for payment testing
 
 ### 1. Clone the repository
 
@@ -139,31 +160,40 @@ From the `client` folder:
 npm run dev
 ```
 
-### 5. Install and start the backend
+### 5. Install backend dependencies
 
 Open another terminal from the project root:
 
 ```bash
 cd server
 npm install
+```
+
+Configure the required backend environment variables in the server's local `.env` file. These include the database connection and the required authentication and Stripe configuration.
+
+### 6. Start the backend
+
+From the `server` folder:
+
+```bash
 node index.js
 ```
 
-Configure the required backend environment variables in a local `.env` file before starting the server.
+The backend runs locally on port `5000`.
 
-Never commit passwords, database credentials, API keys or secret values to GitHub.
+**Security:** Never upload `.env` files, passwords, database credentials, Stripe secret keys or other private credentials to GitHub.
 
 ## Payment Testing
 
-Stripe test mode was used to verify the checkout process.
+Stripe test mode was used to test the checkout process.
 
-**Test card:**
+Test card:
 
-- Card number: `4242 4242 4242 4242`
-- Expiry date: Any future date
-- CVC: Any three digits
+- **Card number:** `4242 4242 4242 4242`
+- **Expiry date:** Any future date
+- **CVC:** Any three digits
 
-Payments made with this test card are simulated and do not represent real transactions.
+These are simulated test payments and do not represent real transactions.
 
 ## Deployment
 
@@ -172,26 +202,32 @@ Payments made with this test card are simulated and do not represent real transa
 | Vercel | Frontend hosting |
 | Render | Backend hosting |
 | Neon | PostgreSQL database |
-| Stripe | Test checkout and payment processing |
+| Stripe | Checkout and payment processing |
 | GitHub | Source code and version control |
 
-## Testing and Quality Improvements
+## Testing and Quality Assurance
 
-The project includes ongoing improvements to:
+The project is tested and improved across the following areas:
 
-- Responsive layouts across desktop and mobile.
-- Navigation and keyboard accessibility.
-- Mobile menu behaviour.
-- Class schedule readability.
-- Interactive hover effects and animations.
+- Desktop and mobile responsiveness.
+- Navigation and mobile menu functionality.
+- Keyboard accessibility.
+- Fitness class and schedule display.
+- User registration and login.
 - Contact form validation and database storage.
-- Authentication and session handling.
 - Stripe checkout and payment confirmation.
+- Backend API functionality.
 
-Changes are tested before being committed to help protect existing functionality.
+Build verification is performed using:
+
+```bash
+npm run build
+```
 
 ## Developer
 
 **Bruno Nunes**
 
 Pulse Fitness – Fitness Website Project
+
+Built using React, Tailwind CSS, Node.js, Express and PostgreSQL.
