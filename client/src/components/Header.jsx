@@ -11,6 +11,7 @@ export default function Header() {
     { label: 'Schedule', href: '#schedule' },
     { label: 'Trainers', href: '#trainers' },
     { label: 'About', href: '#about' },
+    { label: 'Contact', href: '#contact' },
   ];
 
   const focusStyle =
@@ -30,7 +31,7 @@ export default function Header() {
         </a>
 
         {/* Desktop navigation */}
-        <nav className="hidden items-center gap-8 text-sm font-semibold text-gray-600 md:flex">
+        <nav className="hidden items-center gap-6 text-sm font-semibold text-gray-600 md:flex lg:gap-8">
           {navLinks.map((link) => (
             <a
               key={link.href}
@@ -95,7 +96,7 @@ export default function Header() {
         aria-hidden={!menuOpen}
         className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${
           menuOpen
-            ? 'max-h-80 translate-y-0 border-t border-gray-100 opacity-100'
+            ? 'max-h-96 translate-y-0 border-t border-gray-100 opacity-100'
             : 'max-h-0 -translate-y-2 border-transparent opacity-0'
         }`}
       >
